@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi App Flask</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 2em auto; line-height: 1.5; }
+    h2, h3 { color: #333; }
+    form { margin-top: 1em; }
+    input, textarea { width: 100%; padding: 0.5em; margin: 0.3em 0; }
+    button { padding: 0.6em 1.2em; }
+    .error { color: red; }
+    hr { margin: 2em 0; }
+  </style>
+</head>
+<body>
+
+{% if not user %}
+  <h2>Login (SQLi vulnerable)</h2>
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+  <form method="post" action="{{ url_for('index') }}">
+    <label>Usuario:</label>
+    <input name="username" required>
+    <label>Password:</label>
+    <input name="password" type="password" required>
+    <button type="submit">Entrar</button>
+  </form>
+
+{% else %}
+  <h2>Bienvenido, {{ user }}</h2>
+  <a href="{{ url_for('logout') }}">Salir</a>
+  <hr>
+
+  <h3>Deja tu comentario (Stored XSS)</h3>
+  <form method="post" action="{{ url_for('index') }}">
+    <textarea name="comment" rows="4" required></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+  <hr>
+
+  {{ stored|safe }}
+
+{% endif %}
+
+</body>
+</html>
